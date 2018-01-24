@@ -14,6 +14,7 @@ enablePlugins(DynVerPlugin)
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.2")
 
+publishMavenStyle := false
 bintrayPackageLabels := Seq("sbt", "plugin")
 bintrayRepository := "sbt-plugins"
 bintrayVcsUrl := Some("git@github.com:GlobalWebIndex/sbt-smaller-docker.git")
