@@ -97,16 +97,16 @@ Such image is much better for Docker layer sharing and incremental push because 
 
 ## Usage
 
-This plugin cross-compiles for 0.13.16 and sbt 1.0.0+
+This plugin cross-compiles for 0.13.17 and sbt 1.1.5.
 
-Configure `sbt-native-packager >= 1.3.2` so you are able to publish docker images. 
+Configure `sbt-native-packager >= 1.3.3` so you are able to publish docker images. 
 
 Add plugin to `project/plugins.sbt`:
 
 ```scala
 resolvers += Resolver.url("lustefaniak/sbt-plugins", url("https://dl.bintray.com/lustefaniak/sbt-plugins/"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("net.globalwebindex" % "sbt-smaller-docker" % "0.0.1")
+addSbtPlugin("net.globalwebindex" % "sbt-smaller-docker" % "0.0.2")
 ```
 
 Enable and configure plugin:
