@@ -27,8 +27,9 @@ object SmallerDockerPlugin extends AutoPlugin {
         Seq(
           dockerStageFiles := Stager.stage(Docker.name)(streams.value, stagingDirectory.value, mappings.value),
           stage := {
-            dockerStageFiles.value
-            dockerGenerateConfig.value
+            val staged = dockerStageFiles.value
+            val generatedDockerfile = dockerGenerateConfig.value
+            staged
           }
         )
       ) ++ Seq(
