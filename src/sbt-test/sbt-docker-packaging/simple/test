@@ -1,1 +1,2 @@
-> docker:publishLocal
+> docker:stage
+> check
