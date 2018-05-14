@@ -10,5 +10,5 @@ def isFrequentlyChangingFile(file: sbt.File): Boolean = {
   else true
 }
 
-enablePlugins(SmallerDockerPlugin)
+enablePlugins(JavaAppPackaging, SmallerDockerPlugin)
 smallerDockerSettings(isFrequentlyChangingFile)
