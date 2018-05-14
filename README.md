@@ -106,7 +106,7 @@ Add plugin to `project/plugins.sbt`:
 ```scala
 resolvers += Resolver.url("lustefaniak/sbt-plugins", url("https://dl.bintray.com/lustefaniak/sbt-plugins/"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("net.globalwebindex" % "sbt-smaller-docker" % "0.0.2")
+addSbtPlugin("net.globalwebindex" % "sbt-smaller-docker" % "0.0.3")
 ```
 
 Enable and configure plugin:
