@@ -24,7 +24,7 @@ object SmallerDocker {
     val generalCommands = makeFrom(baseImage) +: makeMaintainer(maintainer).toSeq
 
     generalCommands ++ Seq(makeWorkdir(dockerBaseDirectory)) ++ makeExposePorts(exposedPorts, udpPorts) ++
-      makeVolumes(exposedVolumes, user, group) ++ makeAdds(dockerBaseDirectory, dockerStaging, isFrequentlyChangingFile) ++
+      makeVolumes(exposedVolumes, user, group) ++ makeAdds(dockerBaseDirectory, dockerStaging, isFrequentlyChangingFile, user, group) ++
       Seq(
         makeUser(user),
         makeEntrypoint(entrypoint),
@@ -44,7 +44,11 @@ object SmallerDocker {
 
   private final def fileSize(file: sbt.File): Long =
     file.getAbsoluteFile.length()
-  private final def makeAdds(dockerBaseDirectory: String, dockerStaging: sbt.File, isFrequentlyChangingFile: sbt.File => Boolean): Seq[CmdLike] = {
+  private final def makeAdds(dockerBaseDirectory: String,
+                             dockerStaging: sbt.File,
+                             isFrequentlyChangingFile: sbt.File => Boolean,
+                             user: String,
+                             group: String): Seq[CmdLike] = {
     def dockerPath(file: sbt.File): String =
       file.absolutePath.stripPrefix(dockerStaging.absolutePath).stripPrefix("/")
     def getRecursiveListOfFiles(dir: File): Array[File] = {
@@ -52,22 +56,20 @@ object SmallerDocker {
       these ++ these.filter(_.isDirectory).flatMap(getRecursiveListOfFiles)
     }
 
-    val filesInStaging                    = getRecursiveListOfFiles(dockerStaging).toVector
-    val directoriesToCreate: List[String] = filesInStaging.filter(_.isDirectory).map(dockerPath).filterNot(_.isEmpty).map("/" + _)(breakOut)
+    val filesInStaging = getRecursiveListOfFiles(dockerStaging).toVector
 
     val (changingFrequently, notChangingOften) =
       filesInStaging.filter(_.isFile).filterNot(_.name.contains("Dockerfile")).sortBy(fileSize)(Ordering.Long.reverse).partition(isFrequentlyChangingFile)
 
-    val createDirectoriesCommand = if (directoriesToCreate.nonEmpty) Seq(Cmd("RUN", (Seq("mkdir", "-p") ++ directoriesToCreate): _*)) else Seq.empty
-
-    createDirectoriesCommand ++ createAddCommands(notChangingOften.map(dockerPath)) ++ createAddCommands(changingFrequently.map(dockerPath))
+    createAddCommands(notChangingOften.map(dockerPath), user, group) ++ createAddCommands(changingFrequently.map(dockerPath), user, group)
   }
-  private final def createAddCommands(files: Seq[String]): Seq[CmdLike] = {
+
+  private final def createAddCommands(files: Seq[String], user: String, group: String): Seq[CmdLike] = {
     val groupedByDirectory = files.groupBy(f => s"/${f.split("/").dropRight(1).mkString("/")}/")
 
     groupedByDirectory.map {
       case (directory, files) =>
-        Cmd("ADD", (files.sorted ++ Seq(directory)): _*)
+        Cmd("ADD", Seq(s"--chown=${user}:${group}") ++ files.sorted :+ directory: _*)
     }(breakOut)
   }
   private final def makeChown(daemonUser: String, daemonGroup: String, directories: Seq[String]): CmdLike =

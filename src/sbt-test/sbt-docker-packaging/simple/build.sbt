@@ -22,6 +22,6 @@ TaskKey[Unit]("check") := {
 
   }
 
-  check("ADD opt/docker/lib/org.scala-lang.scala-library-2.12.6.jar /opt/docker/lib/")
-  check("ADD opt/docker/lib/com.example.simple-0.1.jar /opt/docker/lib/")
+  check("ADD --chown=daemon:daemon opt/docker/lib/org.scala-lang.scala-library-2.12.6.jar /opt/docker/lib/")
+  check("ADD --chown=daemon:daemon opt/docker/lib/com.example.simple-0.1.jar /opt/docker/lib/")
 }
