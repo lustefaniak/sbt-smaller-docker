@@ -9,10 +9,10 @@ developers := List(
 scmInfo := Some(ScmInfo(url(s"https://github.com/GlobalWebIndex/${name.value}"), s"git@github.com:GlobalWebIndex/${name.value}.git"))
 
 sbtPlugin := true
-crossSbtVersions := Seq("1.1.5", "0.13.17")
+crossSbtVersions := Seq("1.2.6", "0.13.17")
 enablePlugins(DynVerPlugin)
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.4")
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.12")
 
 publishMavenStyle := false
 bintrayPackageLabels := Seq("sbt", "plugin")
